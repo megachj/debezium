@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: kafka-consumer-app
+
+  kafka:
+    consumer:
+      group-id: 1
+      enable-auto-commit: true
+      auto-offset-reset: earliest
+    listener:
+      type: single
+    bootstrap-servers: "localhost:9092"

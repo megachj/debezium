@@ -5,41 +5,37 @@ plugins {
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
+apply(plugin = "java")
+apply(plugin = "org.springframework.boot")
+apply(plugin = "io.spring.dependency-management")
 
-    ext {
-    }
+tasks.bootJar { enabled = true }
+tasks.jar { enabled = false }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-configure(subprojects.filter { it.path.contains("debezium") }) {
-    apply(plugin = "java")
-    apply(plugin = "java-library") // dependency api 사용
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
+repositories {
+    mavenCentral()
+}
 
-    tasks.bootJar { enabled = true }
-    tasks.jar { enabled = false }
+dependencies {
+    compileOnly("org.projectlombok:lombok:1.18.16")
+    testCompileOnly("org.projectlombok:lombok:1.18.16")
+    annotationProcessor("org.projectlombok:lombok:1.18.16")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.16")
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+    implementation("org.springframework.boot:spring-boot-starter")
 
-    dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.16")
-        testCompileOnly("org.projectlombok:lombok:1.18.16")
-        annotationProcessor("org.projectlombok:lombok:1.18.16")
-        testAnnotationProcessor("org.projectlombok:lombok:1.18.16")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-        implementation("org.springframework.boot:spring-boot-starter")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-        testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.boot:spring-boot-starter-web") // healthcheck API 때문에 필요
+    implementation("org.springframework.kafka:spring-kafka")
 
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-    }
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
